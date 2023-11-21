@@ -1,18 +1,33 @@
--- 1.2 Adicionar um procedimento para exibir o total de pedidos de um cliente
+-- 1.3 Reescrever o procedimento 1.2 com uma variável de saída
 CREATE OR REPLACE PROCEDURE sp_total_pedidos_cliente (
-    IN p_codigo_cliente INT
+    IN p_codigo_cliente INT,
+    OUT p_total_pedidos INT
 ) LANGUAGE plpgsql
 AS $$
-DECLARE
-    v_total_pedidos INT;
 BEGIN
-    SELECT COUNT(*) INTO v_total_pedidos FROM tb_pedido WHERE cod_cliente = p_codigo_cliente;
-    RAISE NOTICE 'O cliente de código % possui % pedidos.', p_codigo_cliente, v_total_pedidos;
+    SELECT COUNT(*) INTO p_total_pedidos FROM tb_pedido WHERE cod_cliente = p_codigo_cliente;
 
     -- Registro do log
     INSERT INTO tb_log (nome_procedimento) VALUES ('sp_total_pedidos_cliente');
 END;
 $$
+
+
+-- 1.2 Adicionar um procedimento para exibir o total de pedidos de um cliente
+-- CREATE OR REPLACE PROCEDURE sp_total_pedidos_cliente (
+--     IN p_codigo_cliente INT
+-- ) LANGUAGE plpgsql
+-- AS $$
+-- DECLARE
+--     v_total_pedidos INT;
+-- BEGIN
+--     SELECT COUNT(*) INTO v_total_pedidos FROM tb_pedido WHERE cod_cliente = p_codigo_cliente;
+--     RAISE NOTICE 'O cliente de código % possui % pedidos.', p_codigo_cliente, v_total_pedidos;
+
+--     -- Registro do log
+--     INSERT INTO tb_log (nome_procedimento) VALUES ('sp_total_pedidos_cliente');
+-- END;
+-- $$
 
 
 -- EXERCICIOS STORE PROCEDURE
