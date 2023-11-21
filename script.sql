@@ -1,16 +1,30 @@
--- 1.3 Reescrever o procedimento 1.2 com uma variável de saída
+-- 1.4 Adicionar um procedimento para contar o total de pedidos de um cliente usando parâmetros INOUT
 CREATE OR REPLACE PROCEDURE sp_total_pedidos_cliente (
-    IN p_codigo_cliente INT,
-    OUT p_total_pedidos INT
+    INOUT p_codigo_cliente INT
 ) LANGUAGE plpgsql
 AS $$
 BEGIN
-    SELECT COUNT(*) INTO p_total_pedidos FROM tb_pedido WHERE cod_cliente = p_codigo_cliente;
+    SELECT COUNT(*) INTO p_codigo_cliente FROM tb_pedido WHERE cod_cliente = p_codigo_cliente;
 
     -- Registro do log
     INSERT INTO tb_log (nome_procedimento) VALUES ('sp_total_pedidos_cliente');
 END;
 $$
+
+
+-- 1.3 Reescrever o procedimento 1.2 com uma variável de saída
+-- CREATE OR REPLACE PROCEDURE sp_total_pedidos_cliente (
+--     IN p_codigo_cliente INT,
+--     OUT p_total_pedidos INT
+-- ) LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     SELECT COUNT(*) INTO p_total_pedidos FROM tb_pedido WHERE cod_cliente = p_codigo_cliente;
+
+--     -- Registro do log
+--     INSERT INTO tb_log (nome_procedimento) VALUES ('sp_total_pedidos_cliente');
+-- END;
+-- $$
 
 
 -- 1.2 Adicionar um procedimento para exibir o total de pedidos de um cliente
