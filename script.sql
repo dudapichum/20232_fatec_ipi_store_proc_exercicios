@@ -1,15 +1,38 @@
--- 1.4 Adicionar um procedimento para contar o total de pedidos de um cliente usando parâmetros INOUT
-CREATE OR REPLACE PROCEDURE sp_total_pedidos_cliente (
-    INOUT p_codigo_cliente INT
+-- 1.5 Adicionar um procedimento para inserir clientes usando um parâmetro VARIADIC
+CREATE OR REPLACE PROCEDURE sp_cadastrar_varios_clientes (
+    VARIADIC p_nomes VARCHAR[]
 ) LANGUAGE plpgsql
 AS $$
+DECLARE
+    v_texto_saida TEXT := 'Os clientes: ';
+    v_clientes_cadastrados TEXT;
 BEGIN
-    SELECT COUNT(*) INTO p_codigo_cliente FROM tb_pedido WHERE cod_cliente = p_codigo_cliente;
+    FOREACH v_clientes_cadastrados IN ARRAY p_nomes LOOP
+        INSERT INTO tb_cliente (nome) VALUES (v_clientes_cadastrados);
+        v_texto_saida := v_texto_saida || v_clientes_cadastrados || ', ';
+    END LOOP;
 
-    -- Registro do log
-    INSERT INTO tb_log (nome_procedimento) VALUES ('sp_total_pedidos_cliente');
+    v_texto_saida := LEFT(v_texto_saida, LENGTH(v_texto_saida) - 2);
+    
+    RAISE NOTICE '% foram cadastrados', v_texto_saida;
+    
+    INSERT INTO tb_log (nome_procedimento) VALUES ('sp_cadastrar_varios_clientes');
 END;
 $$
+
+
+-- 1.4 Adicionar um procedimento para contar o total de pedidos de um cliente usando parâmetros INOUT
+-- CREATE OR REPLACE PROCEDURE sp_total_pedidos_cliente (
+--     INOUT p_codigo_cliente INT
+-- ) LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     SELECT COUNT(*) INTO p_codigo_cliente FROM tb_pedido WHERE cod_cliente = p_codigo_cliente;
+
+--     -- Registro do log
+--     INSERT INTO tb_log (nome_procedimento) VALUES ('sp_total_pedidos_cliente');
+-- END;
+-- $$
 
 
 -- 1.3 Reescrever o procedimento 1.2 com uma variável de saída
